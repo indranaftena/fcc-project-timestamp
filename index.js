@@ -20,11 +20,36 @@ app.get("/", function (req, res) {
 
 
 // your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
+app.get("/api/", function (req, res) {
+  console.log("get empty params");
+  const date = new Date();
+  res.json({
+    unix: date.getTime(),
+    utc: date.toUTCString()
+  });
 });
 
-
+app.get("/api/:time", function (req, res) {
+  console.log("input:", req.params.time);
+  const input = req.params.time;
+  let date;
+  if (/[^\d]/.test(input)){
+    date = new Date(input);
+  }
+  else {
+    date = new Date(parseInt(input));
+  }
+  console.log("isValidDate", date)
+  if (isNaN(date)) {
+    res.json({ error: "Invalid Date" });
+  }
+  else {
+    res.json({
+      unix: date.getTime(),
+      utc: date.toUTCString()
+    });
+  }
+});
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
